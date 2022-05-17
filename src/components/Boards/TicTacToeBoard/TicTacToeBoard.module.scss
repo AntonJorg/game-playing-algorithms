@@ -1,0 +1,58 @@
+.TicTacToeBoard {
+    [class~="row"] {
+        display: table-row;
+    }
+
+    [class~="element"] {
+        display: table-cell;
+        border: 3px solid black;
+        position: relative;
+    }
+
+    [class~="X"] {
+        background-color: green;
+        width: 100%;
+        height: 100%;
+    }
+
+    [class~="O"] {
+        background-color: red;
+        width: 100%;
+        height: 100%;
+    }
+
+    [class~="O"]::after {
+        position: absolute;
+        content: '';
+        border: 1vh solid black;
+        border-radius: 50%;
+        width: 80%;
+        height: 80%;
+        transform: translate(-50%, 5%);
+    }
+
+    [class~="X"]::before,
+    [class~="X"]::after {
+        position: absolute;
+        content: '';
+        width: 100%;
+        height: 10%;
+        /* cross thickness */
+        background-color: black;
+    }
+
+    [class~="X"]::before {
+        transform: translate(-50%, 490%) rotate(45deg);
+    }
+
+    [class~="X"]::after {
+        transform: translate(-50%, 490%) rotate(-45deg);
+    }
+
+    width: 60vh;
+    height: 60vh;
+
+    display: table;
+
+    margin: 0 auto;
+}

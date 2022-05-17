@@ -1,0 +1,13 @@
+{
+  "files": {
+    "main.css": "/game-playing-algorithms/static/css/main.dd8558ee.css",
+    "main.js": "/game-playing-algorithms/static/js/main.a0268b43.js",
+    "index.html": "/game-playing-algorithms/index.html",
+    "main.dd8558ee.css.map": "/game-playing-algorithms/static/css/main.dd8558ee.css.map",
+    "main.a0268b43.js.map": "/game-playing-algorithms/static/js/main.a0268b43.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.dd8558ee.css",
+    "static/js/main.a0268b43.js"
+  ]
+}

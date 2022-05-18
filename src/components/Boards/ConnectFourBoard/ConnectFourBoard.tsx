@@ -37,7 +37,7 @@ const ConnectFourBoard: FC<ConnectFourBoardProps> = (props: ConnectFourBoardProp
   )
 };
 
-export function generateConnectFourHandler(game: ConnectFourGame, state: ConnectFourState, stateSetter: CallableFunction) {
+export function generateConnectFourClickHandler(game: ConnectFourGame, state: ConnectFourState, stateSetter: CallableFunction) {
   return (action: number) => {
     // If game is over, return
     if (state.is_terminal()) return

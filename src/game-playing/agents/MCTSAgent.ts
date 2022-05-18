@@ -8,6 +8,8 @@ export class MCTSAgent extends Agent {
 
     explorationWeight = 2 //Math.sqrt(2)
 
+    root: MCTSNode | null = null
+
     constructor(game: Game) {
         super(game)
 
@@ -24,15 +26,11 @@ export class MCTSAgent extends Agent {
         let t = 0
         let counter = 0
 
-        let root = this.initializeNode(state.copy())
+        this.root = this.initializeNode(state.copy())
 
         while (t = new Date().getTime(), (t - startTime) < this.timeLimit * 1000) {
             // Select leaf by UCT
-            let leaf = this.select(root)
-
-            if (leaf.state.is_terminal()) {
-                console.log(leaf.state.applicable_actions())
-            }
+            let leaf = this.select(this.root)
 
             // Expand child node of leaf
             let child = this.expand(leaf)
@@ -46,11 +44,13 @@ export class MCTSAgent extends Agent {
             counter += 1
         }
 
+        console.log("Rollouts:", this.root.playouts)
+
         // Robust child selection policy
-        let playouts = root.children.map((child) => child.node.playouts)
+        let playouts = this.root.children.map((child) => child.node.playouts)
         let robustIndex = argMax(playouts)
 
-        return root.children[robustIndex].action
+        return this.root.children[robustIndex].action
     }
 
     private select(node: MCTSNode): MCTSNode {
@@ -76,16 +76,16 @@ export class MCTSAgent extends Agent {
     private simulate(child: MCTSNode): number {
         let state = child.state.copy()
 
-        let winner = 0
-        while (winner === 0) {
+        while (!state.is_terminal()) {
             let actions = state.applicable_actions()
-            if (actions.length === 0) return 0
+
+            // TODO: Better playout policy
             let action = actions[Math.floor(Math.random() * actions.length)]
+
             state = this.game.result(state, action)
-            winner = state.winner()
         }
 
-        return winner
+        return state.winner()
     }
 
     private backPropagate(node: MCTSNode, result: number) {

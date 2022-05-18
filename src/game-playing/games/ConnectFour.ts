@@ -14,12 +14,18 @@ export class ConnectFourGame extends Game {
 
     result(state: ConnectFourState, action: number): ConnectFourState {
         let s = state.copy() as ConnectFourState
+
+        if (s.applicable_actions().filter((i) => (i === action)).length !== 1) {
+            console.log("Bruh")
+        }
+
         for (let i = 0; i < state.height; i++) {
             if (s.board[action][i] === 0) {
                 s.board[action][i] = state.player
                 break
             }
         }
+
         s.player *= -1
         return s
     }

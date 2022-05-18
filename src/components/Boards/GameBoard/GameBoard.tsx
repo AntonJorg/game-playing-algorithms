@@ -1,35 +1,43 @@
-import React, { FC, useState, useEffect, useMemo } from 'react';
-import { Agent } from '../../../game-playing/agents/Agents';
+import React, { FC, useState, useEffect, useMemo, useTransition } from 'react';
+import { AgentType } from '../../../game-playing/agents/Agents';
 import { Game } from '../../../game-playing/games/Game';
 import styles from './GameBoard.module.scss';
 
 interface BoardProps { boardData: any, handleClick: CallableFunction }
 
-interface GameBoardProps { game: Game, agent: Agent, Board: FC<BoardProps>, generateHandleClick: CallableFunction }
+interface GameBoardProps { game: Game, agents: AgentType[], Board: FC<BoardProps>, generateClickHandler: CallableFunction }
 
-const GameBoard: FC<GameBoardProps> = ({ game, agent, Board, generateHandleClick }) => {
+const GameBoard: FC<GameBoardProps> = ({ game, agents, Board, generateClickHandler }) => {
+
+  // const [isPending, startTransition] = useTransition()
 
   const [state, setState] = useState(game.initial_state)
-  const [winner, setWinner] = useState(0)
+
+  const agentInstances = useMemo(() => [new agents[0](game), new agents[1](game)], [game, agents])
+
+  const playerIndex = (player: number) => (player === 1) ? 0 : 1
+
 
   useEffect(() => {
+    let idx = playerIndex(state.player)
 
-    // If opponents turn, make their move
-    if ((state.player === -1) && (!state.is_terminal())) {
-
-      const timer = setTimeout(() => {
-        let action = agent.takeAction(state)
-
-        console.log("Taking action:", action)
-
-        if (action !== null) {
-          setState(game.result(state, action))
-        }
-      }, 50)
-
-      // Clean up on unmount
-      return () => clearTimeout(timer);
+    if ((agentInstances[idx].name === "Player Agent") || (state.is_terminal())) {
+      return
     }
+
+    const timer = setTimeout(() => {
+      let action = agentInstances[idx].takeAction(state)
+
+      console.log("Taking action:", action)
+
+      if (action !== null) {
+        setState(game.result(state, action))
+      }
+    }, 10)
+
+    // Clean up on unmount
+    return () => clearTimeout(timer);
+
   })
 
   const winnerLabels = [
@@ -38,11 +46,21 @@ const GameBoard: FC<GameBoardProps> = ({ game, agent, Board, generateHandleClick
     "Winner: Player 1"
   ]
 
-  const handleClick = generateHandleClick(game, state, setState)
+  const statusClass = [
+    styles.P2,
+    styles.D,
+    styles.P1
+  ]
+
+  const idx = state.winner() + 1
+
+  const handleClick = generateClickHandler(game, state, setState)
 
   return (
     <div className={styles.GameBoard}>
-      <div className={styles.div}>{state.is_terminal() ? winnerLabels[state.winner() + 1] : "Game in progress"}</div>
+      <div className={`${styles.statusDisplay} ${state.is_terminal() ? statusClass[idx] : ""}`}>
+        {state.is_terminal() ? winnerLabels[idx] : "Game in progress"}
+      </div>
       <div className={styles.div}>
         <Board boardData={state.board} handleClick={handleClick} />
       </div>

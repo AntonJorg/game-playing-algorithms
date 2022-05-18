@@ -21,7 +21,7 @@ const GameBoard: FC<GameBoardProps> = ({ game, agents, Board, generateClickHandl
   useEffect(() => {
     let idx = playerIndex(state.player)
 
-    if ((agentInstances[idx].name === "Player Agent") || (state.is_terminal())) {
+    if ((agentInstances[idx].getName() === "Player Agent") || (state.is_terminal())) {
       return
     }
 

@@ -1,7 +1,7 @@
 import { Agent } from "./Agents";
 
 export class RandomAgent extends Agent {
-    name = "Random Agent";
+    static label = "Random Agent";
 
     constructor(game: any) {
         super(game)

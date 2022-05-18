@@ -2,7 +2,7 @@ import { Game, State } from "../games/Game";
 import { Agent } from "./Agents";
 
 export class MCTSAgent extends Agent {
-    name = "Monte Carlo Tree Search Agent"
+    static label = "Monte Carlo Tree Search Agent"
 
     timeLimit = 2
 

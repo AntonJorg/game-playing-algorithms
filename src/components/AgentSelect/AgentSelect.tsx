@@ -24,7 +24,9 @@ const AgentSelect: FC<AgentSelectProps> = ({ onChange }) => {
     setAgentSelection(newAgentSelection)
   }
 
-  const options = agents.map((agent) => ({ value: agent, label: agent.name }))
+  const options = agents.map((agent) => ({ value: agent, label: agent.label }))
+
+  console.log("options", options)
 
   return (
     <div className={styles.AgentSelect}>

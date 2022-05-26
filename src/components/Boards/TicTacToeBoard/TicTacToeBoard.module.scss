@@ -3,11 +3,18 @@
         display: table-row;
     }
 
-    [class~="element"] {
-        display: table-cell;
-        border: 3px solid black;
-        position: relative;
-    }
+    width: 60vh;
+    height: 60vh;
+
+    display: table;
+
+    margin: 0 auto;
+}
+
+.Square {
+    display: table-cell;
+    border: 3px solid black;
+    position: relative;
 
     [class~="X"] {
         background-color: green;
@@ -48,11 +55,4 @@
     [class~="X"]::after {
         transform: translate(-50%, 490%) rotate(-45deg);
     }
-
-    width: 60vh;
-    height: 60vh;
-
-    display: table;
-
-    margin: 0 auto;
 }

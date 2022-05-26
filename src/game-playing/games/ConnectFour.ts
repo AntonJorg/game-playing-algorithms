@@ -1,10 +1,11 @@
 import { Game, State, Winner, Player } from "./Game";
 
 export class ConnectFourGame extends Game {
+    static label = "Connect Four"
 
     initial_state: ConnectFourState
 
-    constructor(width = 8, height = 6) {
+    constructor(width = 7, height = 6) {
         super()
 
         let board = Array.from(new Array(width), _ => Array(height).fill(0));

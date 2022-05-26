@@ -1,5 +1,7 @@
 
 export abstract class Game {
+    static label: string
+
     abstract initial_state: State
 
     abstract result(state: State, action: any): State

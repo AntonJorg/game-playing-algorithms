@@ -1,6 +1,8 @@
 import { Game, State, Player, Winner } from './Game';
 
 export class TicTacToeGame extends Game {
+    static label = "Tic Tac Toe"
+
     initial_state: TicTacToeState
 
     constructor(grid_size = 3) {

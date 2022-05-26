@@ -1,26 +1,48 @@
-import React, { FC } from 'react';
+import { FC, useContext } from 'react';
 import styles from './ConnectFourBoard.module.scss';
-import { ConnectFourGame, ConnectFourState } from '../../../game-playing/games/ConnectFour';
+import { AppStateContext } from '../../../AppStateContext';
 
-interface ConnectFourBoardProps { boardData: number[][], handleClick: CallableFunction }
+interface ConnectFourBoardProps { }
 
-const ConnectFourBoard: FC<ConnectFourBoardProps> = (props: ConnectFourBoardProps) => {
+const ConnectFourBoard: FC<ConnectFourBoardProps> = () => {
+
+  const { appState, setAppState } = useContext(AppStateContext)
+
+  const handleClick = (action: number) => {
+    // If game is over, return
+    if (appState.state.is_terminal()) return
+
+    // Only allow player to act if their turn
+    if (appState.state.player !== 1) return
+
+    // horrible way to check membership, find way to use set.has()
+    let valid = appState.state.applicable_actions().some((validAction: number) => (
+      (action === validAction)
+    ))
+
+    if (valid) {
+      setAppState({
+        ...appState,
+        state: appState.game.result(appState.state, action)
+      })
+    }
+  }
 
   let rows: any[] = []
-  for (let i = props.boardData[0].length - 1; i >= 0; i--) {
+  for (let i = appState.state.board[0].length - 1; i >= 0; i--) {
     let row: any[] = [];
-    for (let j = 0; j < props.boardData.length; j++) {
+    for (let j = 0; j < appState.state.board.length; j++) {
       let cn = "piece"
-      if (props.boardData[j][i] === 1) {
+      if (appState.state.board[j][i] === 1) {
         cn += " P1"
-      } else if (props.boardData[j][i] === -1) {
+      } else if (appState.state.board[j][i] === -1) {
         cn += " P2"
       }
 
       row = row.concat(<div className="element" key={j}>
         <div
           className="inner"
-          onClick={() => props.handleClick(j)}>
+          onClick={() => handleClick(j)}>
           <div className={cn} />
         </div>
       </div>)
@@ -36,27 +58,5 @@ const ConnectFourBoard: FC<ConnectFourBoardProps> = (props: ConnectFourBoardProp
     </div>
   )
 };
-
-export function generateConnectFourClickHandler(game: ConnectFourGame, state: ConnectFourState, stateSetter: CallableFunction) {
-  return (action: number) => {
-    // If game is over, return
-    if (state.is_terminal()) return
-
-    // Only allow player to act if their turn
-    if (state.player !== 1) return
-
-    // horrible way to check membership, find way to use set.has()
-    let valid = state.applicable_actions().some((validAction: number) => (
-      (action === validAction)
-    ))
-
-    if (valid) {
-      let newState = game.result(state, action)
-
-      stateSetter(newState)
-
-    }
-  }
-}
 
 export default ConnectFourBoard;

@@ -1,37 +1,50 @@
-import React, { FC, useState, useEffect, useMemo, useTransition } from 'react';
+import { FC, useEffect, useContext } from 'react';
+import { AppStateContext } from '../../../AppStateContext';
 import { AgentType } from '../../../game-playing/agents/Agents';
 import { Game } from '../../../game-playing/games/Game';
 import styles from './GameBoard.module.scss';
 
-interface BoardProps { boardData: any, handleClick: CallableFunction }
 
-interface GameBoardProps { game: Game, agents: AgentType[], Board: FC<BoardProps>, generateClickHandler: CallableFunction }
+const winnerLabels = [
+  "Winner: Player 2",
+  "Draw",
+  "Winner: Player 1"
+]
 
-const GameBoard: FC<GameBoardProps> = ({ game, agents, Board, generateClickHandler }) => {
+const statusClass = [
+  styles.P2,
+  styles.D,
+  styles.P1
+]
 
-  // const [isPending, startTransition] = useTransition()
 
-  const [state, setState] = useState(game.initial_state)
+interface GameBoardProps { }
 
-  const agentInstances = useMemo(() => [new agents[0](game), new agents[1](game)], [game, agents])
+const GameBoard: FC<GameBoardProps> = () => {
 
   const playerIndex = (player: number) => (player === 1) ? 0 : 1
 
+  const { appState: { state, game, agents, Board }, setAppState } = useContext(AppStateContext)
 
   useEffect(() => {
     let idx = playerIndex(state.player)
 
-    if ((agentInstances[idx].getName() === "Player Agent") || (state.is_terminal())) {
+    if ((agents[idx].getName() === "Player Agent") || (state.is_terminal())) {
       return
     }
 
     const timer = setTimeout(() => {
-      let action = agentInstances[idx].takeAction(state)
+      let action = agents[idx].takeAction(state)
 
       console.log("Taking action:", action)
 
       if (action !== null) {
-        setState(game.result(state, action))
+        setAppState({
+          game,
+          agents,
+          Board,
+          state: game.result(state, action)
+        })
       }
     }, 10)
 
@@ -40,21 +53,7 @@ const GameBoard: FC<GameBoardProps> = ({ game, agents, Board, generateClickHandl
 
   })
 
-  const winnerLabels = [
-    "Winner: Player 2",
-    "Draw",
-    "Winner: Player 1"
-  ]
-
-  const statusClass = [
-    styles.P2,
-    styles.D,
-    styles.P1
-  ]
-
   const idx = state.winner() + 1
-
-  const handleClick = generateClickHandler(game, state, setState)
 
   return (
     <div className={styles.GameBoard}>
@@ -62,9 +61,9 @@ const GameBoard: FC<GameBoardProps> = ({ game, agents, Board, generateClickHandl
         {state.is_terminal() ? winnerLabels[idx] : "Game in progress"}
       </div>
       <div className={styles.div}>
-        <Board boardData={state.board} handleClick={handleClick} />
+        <Board />
       </div>
-      <button className={styles.button} onClick={() => setState(game.initial_state)}>Reset</button>
+      <button className={styles.button} onClick={() => setAppState({ game, agents, Board, state: game.initial_state })}>Reset</button>
     </div>
   )
 };

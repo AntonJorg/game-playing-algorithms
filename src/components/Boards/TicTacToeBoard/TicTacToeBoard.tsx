@@ -1,57 +1,58 @@
-import React, { FC } from 'react';
+import React, { FC, useContext } from 'react';
+import { AppStateContext } from '../../../AppStateContext';
 import { Game, State } from '../../../game-playing/games/Game';
 import { TicTacToeAction } from '../../../game-playing/games/TicTacToe';
 import styles from './TicTacToeBoard.module.scss';
 
-interface TicTacToeBoardProps { boardData: number[][], handleClick: CallableFunction }
+interface TicTacToeBoardProps { }
 
-const TicTacToeBoard: FC<TicTacToeBoardProps> = (props: TicTacToeBoardProps) => {
+const TicTacToeBoard: FC<TicTacToeBoardProps> = () => {
 
-  return (
-    <div className={styles.TicTacToeBoard}>
-      {props.boardData.map((row: number[], i: number) => {
-        return <div className='row' key={i}>
-          {row.map((element: number, j: number) => {
-            let cno = "element"
-            let cni = ""
-            if (element === 1) {
-              cni = "X"
-            } else if (element === -1) {
-              cni = "O"
-            }
-            return <div
-              className={cno}
-              key={j}
-              onClick={() => props.handleClick({ row: i, col: j })}>
-              <div className={cni}></div>
-            </div>
-          })}
-        </div>
-      })}
-    </div>
-  )
-};
+  const { appState, setAppState } = useContext(AppStateContext)
 
-export function generateTicTacToeClickHandler(game: Game, state: State, stateSetter: CallableFunction) {
-  return (action: TicTacToeAction) => {
+  const handleClick = (action: TicTacToeAction) => {
     // If game is over, return
-    if (state.is_terminal()) return
+    if (appState.state.is_terminal()) return
 
     // Only allow player to act if their turn
-    if (state.player !== 1) return
+    if (appState.state.player !== 1) return
 
     // horrible way to check membership, find way to use set.has()
-    let valid = state.applicable_actions().some((validAction: TicTacToeAction) => (
+    let valid = appState.state.applicable_actions().some((validAction: TicTacToeAction) => (
       (action.row === validAction.row) && (action.col === validAction.col)
     ))
 
     if (valid) {
-      let newState = game.result(state, action)
-
-      stateSetter(newState)
-
+      setAppState({
+        ...appState,
+        state: appState.game.result(appState.state, action)
+      })
     }
   }
+
+  return (
+    <div className={styles.TicTacToeBoard}>
+      {appState.state.board.map((row: number[], i: number) => (
+        <div className='row' key={i}>
+          {row.map((player: number, j: number) => (
+            <Square
+              player={player}
+              key={j}
+              onClick={() => handleClick({ row: i, col: j })} />
+          ))}
+        </div>
+      )
+      )}
+    </div>
+  )
+};
+
+interface SquareProps { player: number, onClick: CallableFunction };
+
+const Square: FC<SquareProps> = ({ player, onClick }) => {
+  return <div className={styles.Square} onClick={() => onClick()}>
+    <div className={(player === 0) ? "" : ((player === 1) ? "X" : "O")}></div>
+  </div>
 }
 
 export default TicTacToeBoard;

@@ -1,13 +1,13 @@
 {
   "files": {
-    "main.css": "/game-playing-algorithms/static/css/main.6bc10d00.css",
-    "main.js": "/game-playing-algorithms/static/js/main.50b7d8ea.js",
+    "main.css": "/game-playing-algorithms/static/css/main.6547bec6.css",
+    "main.js": "/game-playing-algorithms/static/js/main.b6417fd6.js",
     "index.html": "/game-playing-algorithms/index.html",
-    "main.6bc10d00.css.map": "/game-playing-algorithms/static/css/main.6bc10d00.css.map",
-    "main.50b7d8ea.js.map": "/game-playing-algorithms/static/js/main.50b7d8ea.js.map"
+    "main.6547bec6.css.map": "/game-playing-algorithms/static/css/main.6547bec6.css.map",
+    "main.b6417fd6.js.map": "/game-playing-algorithms/static/js/main.b6417fd6.js.map"
   },
   "entrypoints": [
-    "static/css/main.6bc10d00.css",
-    "static/js/main.50b7d8ea.js"
+    "static/css/main.6547bec6.css",
+    "static/js/main.b6417fd6.js"
   ]
 }

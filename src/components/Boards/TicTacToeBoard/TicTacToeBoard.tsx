@@ -8,31 +8,33 @@ interface TicTacToeBoardProps { }
 
 const TicTacToeBoard: FC<TicTacToeBoardProps> = () => {
 
-  const { appState, setAppState } = useContext(AppStateContext)
+  const { appState: { state, game }, dispatch } = useContext(AppStateContext)
 
   const handleClick = (action: TicTacToeAction) => {
     // If game is over, return
-    if (appState.state.is_terminal()) return
+    if (state.is_terminal()) return
 
     // Only allow player to act if their turn
-    if (appState.state.player !== 1) return
+    if (state.player !== 1) return
 
     // horrible way to check membership, find way to use set.has()
-    let valid = appState.state.applicable_actions().some((validAction: TicTacToeAction) => (
+    let valid = state.applicable_actions().some((validAction: TicTacToeAction) => (
       (action.row === validAction.row) && (action.col === validAction.col)
     ))
 
     if (valid) {
-      setAppState({
-        ...appState,
-        state: appState.game.result(appState.state, action)
+      dispatch({
+        type: "set-state",
+        payload: {
+          state: game.result(state, action)
+        }
       })
     }
   }
 
   return (
     <div className={styles.TicTacToeBoard}>
-      {appState.state.board.map((row: number[], i: number) => (
+      {state.board.map((row: number[], i: number) => (
         <div className='row' key={i}>
           {row.map((player: number, j: number) => (
             <Square

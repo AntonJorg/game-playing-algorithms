@@ -1,0 +1,13 @@
+.ResetButtons {
+
+    display: grid;
+    grid-template-columns: 48% 48%;
+    grid-column-gap: 4%;
+
+    button {
+        height: 4em;
+        border-radius: 5px;
+        background-color: white;
+        border: 1px solid black;
+    }
+}

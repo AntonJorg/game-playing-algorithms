@@ -15,7 +15,7 @@ interface GameSelectProps { }
 
 const GameSelect: FC<GameSelectProps> = () => {
 
-  const { appState, setAppState } = useContext(AppStateContext);
+  const { appState, dispatch } = useContext(AppStateContext);
 
   return <div className={styles.GameSelect}>
     <Select
@@ -24,12 +24,12 @@ const GameSelect: FC<GameSelectProps> = () => {
       onChange={(value) => {
         if (!value) return
         const game = new value.value.game()
-        setAppState({
-          game: game,
-          Board: value.value.Board,
-          state: game.initial_state,
-          // reconstruct all agents with the new game
-          agents: appState.agents.map((agent) => new (Object.getPrototypeOf(agent).constructor)(game))
+        dispatch({
+          type: "set-game",
+          payload: {
+            game: game,
+            Board: value.value.Board
+          }
         })
       }} />
   </div>

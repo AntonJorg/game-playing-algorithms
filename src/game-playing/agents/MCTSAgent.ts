@@ -8,7 +8,7 @@ export class MCTSAgent extends Agent {
 
     explorationWeight = 2 //Math.sqrt(2)
 
-    root: MCTSNode | null = null
+    root: MCTSNode = undefined as unknown as MCTSNode
 
     constructor(game: Game) {
         super(game)
@@ -17,7 +17,7 @@ export class MCTSAgent extends Agent {
         this.game = game
     }
 
-    takeAction(state: any) {
+    takeAction(state: State) {
         if (state.applicable_actions().length === 0) {
             return null
         }
@@ -80,7 +80,17 @@ export class MCTSAgent extends Agent {
             let actions = state.applicable_actions()
 
             // TODO: Better playout policy
-            let action = actions[Math.floor(Math.random() * actions.length)]
+            //let outcomes = actions.map((action) => this.game.result(state, action).winner())
+            //let winningIndex = outcomes.findIndex((i) => i === state.player)
+
+            //if (winningIndex !== -1) {
+            //    var action = actions[winningIndex]
+            //} else {
+            //    var action = actions[Math.floor(Math.random() * actions.length)]
+            //}
+
+            var action = actions[Math.floor(Math.random() * actions.length)]
+
 
             state = this.game.result(state, action)
         }

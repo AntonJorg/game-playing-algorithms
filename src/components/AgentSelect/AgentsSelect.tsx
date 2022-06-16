@@ -35,16 +35,19 @@ interface AgentSelectProps { index: 0 | 1 }
 
 const AgentSelect: FC<AgentSelectProps> = ({ index }) => {
 
-  const { appState, setAppState } = useContext(AppStateContext)
+  const { appState, dispatch } = useContext(AppStateContext)
 
   return <Select
     defaultValue={options[index]}
     options={options}
     onChange={(value) => {
       if (!value) return
-      setAppState({
-        ...appState,
-        agents: appState.agents.map((agent, idx) => index == idx ? new value.value(appState.game) : agent)
+      dispatch({
+        type: "set-agent",
+        payload: {
+          agent: new value.value(appState.game),
+          index: index
+        }
       })
     }
     }

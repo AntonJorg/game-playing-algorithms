@@ -9,20 +9,31 @@ import games from './game-playing/games/Games';
 
 import { AppStateContext, useAppState } from './AppStateContext';
 import GameSelect from './components/GameSelect/GameSelect';
+import ResultsStats from './components/ResultsStats/ResultsStats';
+import AgentStats from './components/AgentStats/AgentStats';
+import ResetButtons from './components/ResetButtons/ResetButtons';
 
 function App() {
 
-  const { appState, setAppState } = useAppState()
-
-  // useEffect(() => console.log(appState))
+  const { appState, dispatch } = useAppState()
 
   return (
     <div className="App">
-      <h1>Game Playing Algorithms</h1>
-      <AppStateContext.Provider value={{ appState, setAppState }}>
-        <GameSelect />
-        <AgentsSelect />
-        <GameBoard />
+      <AppStateContext.Provider value={{ appState, dispatch }}>
+
+        <div>
+          <h1>Game Playing Algorithms</h1>
+          <GameSelect />
+          <AgentsSelect />
+          <GameBoard />
+          <ResetButtons />
+        </div>
+        <div>
+          <ResultsStats />
+          <AgentStats index={0} />
+          <AgentStats index={1} />
+        </div>
+
       </AppStateContext.Provider>
     </div>
   );

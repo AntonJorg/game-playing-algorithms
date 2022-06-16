@@ -1,0 +1,21 @@
+.AgentStats {
+    margin-top: 1em;
+    border: 1px solid black;
+    border-radius: 5px;
+    height: 30vh;
+}
+
+.MCTSAction {
+    text-align: left;
+    margin-bottom: 1em;
+
+    p {
+        margin: .25em .5em;
+    }
+}
+
+.MCTSAgentStats {
+    height: 100%;
+    display: grid;
+    grid-template-rows: 20% 80%;
+}

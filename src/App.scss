@@ -2,7 +2,23 @@
   text-align: center;
   justify-content: center;
   display: grid;
-  grid-template-columns: 100%;
-  width: 80%;
+  grid-template-columns: 70% 25%;
+  grid-column-gap: 5%;
+  width: 90%;
   margin: 0 auto;
+  height: 100vh;
+}
+
+.red {
+  background-color: red;
+
+  :first-child {
+    margin-top: 38;
+  }
+
+  *> {
+    margin-bottom: 1em;
+    height: 20vh;
+    background-color: blue;
+  }
 }

@@ -24,10 +24,19 @@ const GameBoard: FC<GameBoardProps> = () => {
 
   const playerIndex = (player: number) => (player === 1) ? 0 : 1
 
-  const { appState: { state, game, agents, Board }, setAppState } = useContext(AppStateContext)
+  const { appState: { state, game, agents, Board, autoReset }, dispatch } = useContext(AppStateContext)
 
   useEffect(() => {
     let idx = playerIndex(state.player)
+
+    if (autoReset && state.is_terminal()) {
+      let timer = setTimeout(() => dispatch({
+        type: "reset-state",
+        payload: null
+      }), 1000)
+
+      return () => clearTimeout(timer)
+    }
 
     if ((agents[idx].getName() === "Player Agent") || (state.is_terminal())) {
       return
@@ -39,11 +48,22 @@ const GameBoard: FC<GameBoardProps> = () => {
       console.log("Taking action:", action)
 
       if (action !== null) {
-        setAppState({
-          game,
-          agents,
-          Board,
-          state: game.result(state, action)
+
+        let newState = game.result(state, action)
+
+        if (newState.is_terminal()) {
+          if (newState.winner() === 1) {
+            dispatch({ type: "agent1-win", payload: null })
+          } else if (newState.winner() === -1) {
+            dispatch({ type: "agent2-win", payload: null })
+          }
+        }
+
+        dispatch({
+          type: "set-state",
+          payload: {
+            state: newState
+          }
         })
       }
     }, 10)
@@ -52,6 +72,9 @@ const GameBoard: FC<GameBoardProps> = () => {
     return () => clearTimeout(timer);
 
   })
+
+  //useEffect(() => console.log("unconditional"))
+  //useEffect(() => console.log("conditional on state"), [state])
 
   const idx = state.winner() + 1
 
@@ -63,7 +86,6 @@ const GameBoard: FC<GameBoardProps> = () => {
       <div className={styles.div}>
         <Board />
       </div>
-      <button className={styles.button} onClick={() => setAppState({ game, agents, Board, state: game.initial_state })}>Reset</button>
     </div>
   )
 };

@@ -1,5 +1,6 @@
 import { Game, State } from "../games/Game";
 import { Agent } from "./Agents";
+import { argMax } from "../../utils";
 
 export class MCTSAgent extends Agent {
     static label = "Monte Carlo Tree Search Agent"
@@ -95,7 +96,7 @@ export class MCTSAgent extends Agent {
             state = this.game.result(state, action)
         }
 
-        return state.winner()
+        return state.utility()
     }
 
     private backPropagate(node: MCTSNode, result: number) {
@@ -152,22 +153,3 @@ interface MCTSNodeChild {
     action: any,
     node: MCTSNode
 }
-
-// REWORK
-function argMax(arr: number[]) {
-    if (arr.length === 0) {
-        return -1;
-    }
-
-    var max = arr[0];
-    var maxIndex = 0;
-
-    for (var i = 1; i < arr.length; i++) {
-        if (arr[i] > max) {
-            maxIndex = i;
-            max = arr[i];
-        };
-    };
-
-    return maxIndex;
-};

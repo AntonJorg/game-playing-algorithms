@@ -1,3 +1,4 @@
+import { isDefined } from "../../utils";
 import { Game, State, Winner, Player } from "./Game";
 
 export class ConnectFourGame extends Game {
@@ -49,10 +50,12 @@ export class ConnectFourState extends State {
             if (column[this.height - 1] === 0) {
                 return index
             }
-        }).filter((val) => val !== undefined)
+        }).filter(isDefined).sort(
+            (a, b) => Math.abs(a - Math.floor(this.width / 2)) - Math.abs(b - Math.floor(this.width / 2)) || b - a
+        )
     }
 
-    winner(): Winner {
+    utility(): number {
         if (this.areFourConnected(1)) {
             return 1
         } else if (this.areFourConnected(-1)) {

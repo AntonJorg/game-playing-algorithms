@@ -52,9 +52,9 @@ const GameBoard: FC<GameBoardProps> = () => {
         let newState = game.result(state, action)
 
         if (newState.is_terminal()) {
-          if (newState.winner() === 1) {
+          if (newState.utility() === 1) {
             dispatch({ type: "agent1-win", payload: null })
-          } else if (newState.winner() === -1) {
+          } else if (newState.utility() === -1) {
             dispatch({ type: "agent2-win", payload: null })
           }
         }
@@ -76,7 +76,7 @@ const GameBoard: FC<GameBoardProps> = () => {
   //useEffect(() => console.log("unconditional"))
   //useEffect(() => console.log("conditional on state"), [state])
 
-  const idx = state.winner() + 1
+  const idx = state.utility() + 1
 
   return (
     <div className={styles.GameBoard}>

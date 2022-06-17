@@ -3,11 +3,13 @@ import styles from './AgentSelect.module.scss';
 import Select from 'react-select'
 import { PlayerAgent, RandomAgent, MCTSAgent } from '../../game-playing/agents/Agents';
 import { AppStateContext } from '../../AppStateContext';
+import { MiniMaxAgent } from '../../game-playing/agents/MiniMaxAgent';
 
-const agents: (typeof PlayerAgent | typeof RandomAgent | typeof MCTSAgent)[] = [
+const agents: (typeof PlayerAgent | typeof RandomAgent | typeof MCTSAgent | typeof MiniMaxAgent)[] = [
   PlayerAgent,
   RandomAgent,
-  MCTSAgent
+  MCTSAgent,
+  MiniMaxAgent
 ]
 
 const options = agents.map((agent) => ({ value: agent, label: agent.label }))

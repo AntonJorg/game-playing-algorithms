@@ -14,10 +14,10 @@ export abstract class State {
 
     abstract applicable_actions(): any[]
 
-    abstract winner(): Winner
+    abstract utility(): number
 
     is_terminal(): boolean {
-        return (this.winner() !== 0) || (this.applicable_actions().length === 0)
+        return (this.utility() !== 0) || (this.applicable_actions().length === 0)
     }
 
     copy(): State {

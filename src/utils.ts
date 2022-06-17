@@ -20,3 +20,33 @@ export function* zip<T extends Array<any>>(
         yield results.map(({ value }) => value) as T
     }
 }
+
+export function argMax(arr: number[]): number {
+    if (arr.length === 0) {
+        return -1;
+    }
+
+    var max = arr[0];
+    var maxIndex = 0;
+
+    for (var i = 1; i < arr.length; i++) {
+        if (arr[i] > max) {
+            maxIndex = i;
+            max = arr[i];
+        };
+    };
+
+    return maxIndex;
+};
+
+export function hashCode(str: string): number {
+    var h: number = 0;
+    for (var i = 0; i < str.length; i++) {
+        h = 31 * h + str.charCodeAt(i);
+    }
+    return h & 0xFFFFFFFF
+}
+
+export function isDefined(e: number | undefined): e is number {
+    return !!e
+}

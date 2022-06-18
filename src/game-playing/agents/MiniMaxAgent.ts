@@ -1,10 +1,20 @@
 import { Game, State } from "../games/Game";
 import { Agent } from "./Agents";
+import { hashCode } from "../../utils";
+
 
 export class MiniMaxAgent extends Agent {
     static label = "MiniMax Agent"
 
-    root: MiniMaxNode = undefined as unknown as MiniMaxNode
+    rootPlayer: number = 0
+
+    timeLimit: number = 10000
+
+    transpositionTable: Map<string, [number, any]> = new Map()
+
+    // Statistics
+    searched: number = 0
+    transpositions: number = 0
 
     constructor(game: Game) {
         super(game)
@@ -13,40 +23,106 @@ export class MiniMaxAgent extends Agent {
     }
 
     takeAction(state: State): any {
-        this.root = this.initializeNode(state)
-
-    }
-
-    private initializeNode(state: State, parent: MiniMaxNode | null = null, action: any | null = null): MiniMaxNode {
-        let newNode: MiniMaxNode = {
-            state: state,
-            parent: parent,
-            children: [],
-            unexpandedActions: state.applicable_actions(),
+        if (state.applicable_actions().length === 0) {
+            return null
         }
 
-        if (parent) {
-            let parentChildConnection: MiniMaxNodeChild = {
-                action: action,
-                node: newNode
+        this.rootPlayer = state.player
+
+        let startTime = new Date().getTime()
+        let t = 0
+        let depth = 1
+        let pastSearched = 0
+
+        while (t = new Date().getTime(), (t - startTime) < this.timeLimit * 1000) {
+            this.searched = 0
+            this.transpositions = 0
+            this.transpositionTable = new Map()
+
+            var [v, action] = this.maxValue(state, -Infinity, Infinity, depth)
+
+            console.log({ depth: depth, searched: this.searched, transpositions: this.transpositions })
+
+            if (this.searched == pastSearched) {
+                break
             }
+            pastSearched = this.searched
 
-            parent.children = parent.children.concat(parentChildConnection)
+            depth++
         }
 
-        return newNode
+        return action
     }
 
-}
+    private maxValue(state: State, alpha: number, beta: number, depth: number): [number, any] {
+        this.searched++
+        // Exit on terminal states, no action
+        if (state.is_terminal()) {
+            return [state.utility() * this.rootPlayer, undefined]
+        }
 
-interface MiniMaxNode {
-    state: State
-    parent: MiniMaxNode | null,
-    children: MiniMaxNodeChild[],
-    unexpandedActions: any[]
-}
+        const stateHash = state.board.toString() + state.player.toString()
 
-interface MiniMaxNodeChild {
-    action: any,
-    node: MiniMaxNode
+        // Check for transpositions
+        const transposition = this.transpositionTable.get(stateHash)
+        if (transposition !== undefined) {
+            this.transpositions++
+            return transposition
+        }
+
+        var v = -Infinity
+        var action = undefined
+
+        for (let a of state.applicable_actions()) {
+            var w = this.minValue(this.game.result(state, a), alpha, beta, depth - 1)
+
+            if (w > v) {
+                v = w
+                action = a
+            }
+            if (v >= beta) {
+                this.transpositionTable.set(stateHash, [v, action])
+                return [v, action]
+            }
+            alpha = Math.max(alpha, v)
+        }
+
+        this.transpositionTable.set(stateHash, [v, action])
+        return [v, action]
+    }
+
+    private minValue(state: State, alpha: number, beta: number, depth: number): number {
+        this.searched++
+        // Exit on terminal states
+        if (state.is_terminal() || (depth === 0)) {
+            return state.utility() * this.rootPlayer
+        }
+
+        // Generate hash of current state
+        const stateHash = state.board.toString() + state.player.toString()
+
+        // Check for transpositions
+        const transposition = this.transpositionTable.get(stateHash)
+        if (transposition !== undefined) {
+            this.transpositions++
+            return transposition[0]
+        }
+
+        var v = Infinity
+
+        for (let a of state.applicable_actions()) {
+
+            v = Math.min(v, this.maxValue(this.game.result(state, a), alpha, beta, depth)[0])
+            if (v <= alpha) {
+
+                this.transpositionTable.set(stateHash, [v, null])
+                return v
+            }
+            beta = Math.min(beta, v)
+        }
+
+        this.transpositionTable.set(stateHash, [v, null])
+        return v
+    }
+
 }

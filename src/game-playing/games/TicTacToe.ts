@@ -69,8 +69,8 @@ export class TicTacToeState extends State {
         return moves
     }
 
-    winner(): Winner {
-        let winner: Winner = 0
+    utility(): number {
+        let winner: number = 0
         this.scores.forEach((score) => {
             if (score === this.grid_size) {
                 winner = 1
